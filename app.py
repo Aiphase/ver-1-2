@@ -9,8 +9,12 @@ CORS(app)
 # Set your OpenAI API key
 openai.api_key = "your_openai_api_key_here"
 
-@app.route('/api/chat', methods=['POST'])
+@app.route('/api/chat', methods=['POST', 'GET'])
 def chat():
+    if request.method == 'GET':
+        return jsonify({"message": "This endpoint supports only POST requests for chat."}), 200
+
+    # Обработка POST запроса
     user_message = request.json.get('message')
     if not user_message:
         return jsonify({"error": "Message is required"}), 400
@@ -28,6 +32,7 @@ def chat():
         return jsonify({"reply": assistant_reply})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 if __name__ == '__main__':
     # Use Render's PORT environment variable
